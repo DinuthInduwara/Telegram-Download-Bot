@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/tucnak/telebot"
+	telebot "gopkg.in/telebot.v3"
 )
 
 func main() {
@@ -22,25 +22,32 @@ func main() {
 		return
 	}
 
-	bot.Handle(telebot.OnDocument, func(m *telebot.Message) {
-		url := UrlGenerator(m, bot)
-		go downloadMedia(bot, m, url, filepath.Base(url))
-		fmt.Println(url)
+	bot.Handle(telebot.OnDocument, func(m telebot.Context) error {
+		url := UrlGenerator(m.Message(), bot)
+		go downloadMedia(bot, m.Message(), url, filepath.Base(url))
+		fmt.Println(url, m)
+		return nil
 	})
-	bot.Handle(telebot.OnVideo, func(m *telebot.Message) {
-		url := UrlGenerator(m, bot)
-		go downloadMedia(bot, m, url, filepath.Base(url))
+	bot.Handle(telebot.OnVideo, func(m telebot.Context) error {
+		url := UrlGenerator(m.Message(), bot)
+		go downloadMedia(bot, m.Message(), url, filepath.Base(url))
 		fmt.Println(url)
+		return nil
+
 	})
-	bot.Handle(telebot.OnPhoto, func(m *telebot.Message) {
-		url := UrlGenerator(m, bot)
-		go downloadMedia(bot, m, url, filepath.Base(url))
+	bot.Handle(telebot.OnPhoto, func(m telebot.Context) error {
+		url := UrlGenerator(m.Message(), bot)
+		go downloadMedia(bot, m.Message(), url, filepath.Base(url))
 		fmt.Println(url)
+		return nil
+
 	})
-	bot.Handle(telebot.OnAudio, func(m *telebot.Message) {
-		url := UrlGenerator(m, bot)
-		go downloadMedia(bot, m, url, filepath.Base(url))
+	bot.Handle(telebot.OnAudio, func(m telebot.Context) error {
+		url := UrlGenerator(m.Message(), bot)
+		go downloadMedia(bot, m.Message(), url, filepath.Base(url))
 		fmt.Println(url)
+		return nil
+
 	})
 
 	bot.Start()
